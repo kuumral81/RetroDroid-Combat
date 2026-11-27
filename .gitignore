@@ -1,0 +1,25 @@
+# Python virtual environments & bytecode/tool caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Teamwork agent metadata & runtime work directory
+.agents/
+work/
+
+# Secrets, signing keystores & environment files
+*.jks
+*.pass
+.env
+.env.*
+
+# Temporary, backup, OS & Node files
+*.tmp
+*.bak
+.DS_Store
+node_modules/

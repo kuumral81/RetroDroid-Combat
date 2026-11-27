@@ -1,0 +1,63 @@
+# Version control & agent/CI metadata
+.git
+.gitignore
+.github
+.agents
+
+# Python virtual environments & caches
+.venv
+venv
+__pycache__
+**/__pycache__
+*.py[cod]
+**/*.py[cod]
+*$py.class
+**/*$py.class
+.pytest_cache
+**/.pytest_cache
+.ruff_cache
+**/.ruff_cache
+.mypy_cache
+**/.mypy_cache
+
+# Dev, test, and build scripts
+node_modules
+**/node_modules
+tests
+scripts
+
+# Environment files, signing secrets & backups
+.env
+.env.*
+**/.env
+**/.env.*
+*.jks
+**/*.jks
+*.keystore
+**/*.keystore
+*.pass
+**/*.pass
+*.bak*
+**/*.bak*
+
+# Android binaries, archives, logs & OS metadata
+*.apk
+**/*.apk
+*.xapk
+**/*.xapk
+*.apks
+**/*.apks
+*.apkm
+**/*.apkm
+*.obb
+**/*.obb
+*.zip
+**/*.zip
+*.log
+**/*.log
+*.tmp
+**/*.tmp
+.DS_Store
+**/.DS_Store
+Thumbs.db
+**/Thumbs.db

@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RetroDroid Compat v5.4.0 — Android APK / XAPK Uyumluluk ve Yeniden Paketleme Platformu</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Crect width='24' height='24' rx='6' fill='%23121720'/%3E%3Cpath d='M7.5 8.5L5.8 5.8M16.5 8.5L18.2 5.8' stroke='%2338bdf8' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M4.5 14C4.5 10.4 7.7 7.5 12 7.5C16.3 7.5 19.5 10.4 19.5 14V16.5C19.5 18.2 18.2 19.5 16.5 19.5H7.5C5.8 19.5 4.5 18.2 4.5 16.5V14Z' fill='%2310b98133' stroke='%2334d399' stroke-width='1.8'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="rd-ambient" aria-hidden="true">
+    <div class="rd-ambient-orb rd-ambient-orb--emerald"></div>
+    <div class="rd-ambient-orb rd-ambient-orb--sky"></div>
+  </div>
+
+  <div id="app-shell">
+    <!-- ÜST UYGULAMA BAŞLIĞI -->
+    <header class="rd-header">
+      <div class="rd-brand">
+        <div class="rd-logo-box" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M7.5 8.5L5.8 5.8M16.5 8.5L18.2 5.8" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" />
+            <path d="M4.5 14C4.5 10.4 7.7 7.5 12 7.5C16.3 7.5 19.5 10.4 19.5 14V16.5C19.5 18.2 18.2 19.5 16.5 19.5H7.5C5.8 19.5 4.5 18.2 4.5 16.5V14Z" fill="rgba(16,185,129,0.16)" stroke="currentColor" stroke-width="1.8" />
+            <path d="M8.5 14H11.5M10 12.5V15.5" stroke="#34d399" stroke-width="1.8" stroke-linecap="round" />
+            <circle cx="15" cy="13.2" r="1" fill="#38bdf8" />
+            <circle cx="16.5" cy="14.8" r="1" fill="#34d399" />
+          </svg>
+        </div>
+        <div class="rd-brand-meta">
+          <div class="rd-brand-row">
+            <h1 class="rd-brand-title">RetroDroid <span>Compat</span></h1>
+            <span class="rd-badge rd-badge--emerald mono">v5.4.0</span>
+            <span class="rd-badge rd-badge--sky rd-hide-sm">APK / XAPK / APKS</span>
+          </div>
+          <p class="rd-brand-sub truncate">Manifest Yamalama, 16 KB ELF Analizi ve v1/v2/v3 İmzalama Platformu</p>
+        </div>
+      </div>
+
+      <div class="rd-header-actions">
+        <button type="button" id="btn-header-add-pkg" data-switch-tab="patcher" class="rd-btn rd-btn--emerald rd-btn--sm rd-hide-sm">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+          </svg>
+          Paket Ekle
+        </button>
+        <button type="button" id="btn-header-server-status" data-switch-tab="patcher" class="rd-status-pill" aria-label="Sunucu bağlantı durumunu görüntüle">
+          <span id="header-server-dot" class="rd-dot rd-dot--amber rd-dot--pulse"></span>
+          <span id="header-server-label" class="rd-hide-sm">Sunucu Kontrol...</span>
+          <span class="rd-status-sep rd-hide-sm" aria-hidden="true">|</span>
+          <span id="header-profile-badge">Maks. Uyum</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ANA İÇERİK ALANI -->
+    <main id="main-content">
+      <!-- =================================================================== -->
+      <!-- SEKME 1: OYUN KÜTÜPHANESİ                                           -->
+      <!-- =================================================================== -->
+      <section id="tab-library" class="tab-section" role="tabpanel" aria-labelledby="nav-tab-library">
+        <div class="rd-hero">
+          <div class="rd-hero-copy">
+            <span class="rd-eyebrow"><span class="rd-eyebrow-dot"></span> ANDROID PAKET YÖNETİMİ</span>
+            <h2>Oyun arşivin <span>kontrol altında.</span></h2>
+            <p>Eski APK, XAPK, APKS ve APKM paketlerini 16 KB ELF, targetSdk ve imza yönünden incele; sunucuda gerçek manifest yaması ve v1/v2/v3 imzalama uygula.</p>
+            <div class="rd-hero-actions">
+              <button type="button" data-switch-tab="patcher" class="rd-primary-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+                </svg>
+                Yeni paket yükle
+              </button>
+              <span class="rd-hero-note">APK · XAPK · APKS · APKM · OBB</span>
+            </div>
+          </div>
+          <div class="rd-hero-art" aria-hidden="true">
+            <div class="rd-art-orbit rd-orbit-one"></div>
+            <div class="rd-art-orbit rd-orbit-two"></div>
+            <div class="rd-art-chip">
+              <svg viewBox="0 0 64 64" fill="none">
+                <rect x="13" y="7" width="38" height="50" rx="9" stroke="currentColor" stroke-width="2.5" />
+                <path d="M23 19h18M23 27h18M23 35h10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="32" cy="47" r="2" fill="currentColor" />
+              </svg>
+            </div>
+            <span class="rd-art-label">RETRODROID / v5.4.0</span>
+          </div>
+        </div>
+
+        <!-- Özet Kartları -->
+        <div class="rd-grid-4">
+          <div class="glass-card rd-stat-card">
+            <div class="rd-icon-tile rd-icon-tile--emerald" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="6" width="20" height="12" rx="4" />
+                <path d="M6 12h4M8 10v4" />
+                <circle cx="15" cy="11" r="1" fill="currentColor" />
+                <circle cx="17.5" cy="13" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <div>
+              <p class="rd-stat-label">Kayıtlı Paketler</p>
+              <p id="stat-game-count" class="rd-stat-value">0</p>
+            </div>
+          </div>
+
+          <div class="glass-card rd-stat-card">
+            <div class="rd-icon-tile rd-icon-tile--sky" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+              </svg>
+            </div>
+            <div>
+              <p class="rd-stat-label">Toplam Paket Boyutu</p>
+              <p id="stat-total-size" class="rd-stat-value">0 GB</p>
+            </div>
+          </div>
+
+          <div class="glass-card rd-stat-card">
+            <div class="rd-icon-tile rd-icon-tile--violet" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+            </div>
+            <div>
+              <p class="rd-stat-label">Analiz &amp; Yama Motoru</p>
+              <p class="rd-stat-value rd-stat-value--sm">Manifest + 16 KB ELF</p>
+            </div>
+          </div>
+
+          <div class="glass-card rd-stat-card">
+            <div class="rd-icon-tile rd-icon-tile--amber" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </div>
+            <div>
+              <p class="rd-stat-label">Maks. Paket Limiti</p>
+              <p class="rd-stat-value">5.0 GB</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Arama ve Filtre Çubuğu -->
+        <div class="rd-toolbar">
+          <div class="rd-search-box">
+            <svg class="rd-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" stroke-linecap="round" />
+            </svg>
+            <label for="library-search" class="sr-only">Kütüphanede oyun veya paket ara</label>
+            <input
+              id="library-search"
+              type="search"
+              placeholder="Kütüphanede oyun, sürüm veya paket ara..."
+              class="rd-input rd-input--search"
+            />
+          </div>
+
+          <div id="library-filters" role="group" aria-label="Paket biçimi filtreleri">
+            <button type="button" data-filter="ALL" class="filter-pill filter-pill--active" aria-pressed="true">Tümü</button>
+            <button type="button" data-filter="XAPK" class="filter-pill" aria-pressed="false">Konteyner (XAPK/APKS/OBB)</button>
+            <button type="button" data-filter="APK" class="filter-pill" aria-pressed="false">APK</button>
+            <button type="button" data-filter="BRIDGE" class="filter-pill" aria-pressed="false">32-bit / ABI</button>
+          </div>
+        </div>
+
+        <!-- Oyun Kartları -->
+        <div id="library-grid" class="rd-grid-2"></div>
+
+        <!-- Boş Kütüphane Durumu -->
+        <div id="library-empty" class="glass-card rd-empty-box hidden">
+          <div class="rd-icon-tile rd-icon-tile--lg rd-icon-tile--sky" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+              <path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="rd-heading rd-heading--sm">Eşleşen paket bulunamadı</h3>
+            <p class="rd-subtitle">Yeni bir APK, XAPK, APKS veya APKM paketi yükleyip analiz ve uyumluluk yamalamasını başlatabilirsiniz.</p>
+          </div>
+          <button type="button" data-switch-tab="patcher" class="rd-btn neon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            Yükle &amp; Yamala Ekranına Git
+          </button>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- SEKME 2: YÜKLEME, ANALİZ VE GERÇEK SUNUCU YAMALAYICI                -->
+      <!-- =================================================================== -->
+      <section id="tab-patcher" class="tab-section hidden" role="tabpanel" aria-labelledby="nav-tab-patcher">
+        <!-- Bölüm 0: Sunucu Bağlantısı, API Anahtarı ve Keystore Bilgisi -->
+        <div class="glass-card glass-card--sky rd-stack">
+          <div class="rd-section-head">
+            <div class="rd-row rd-min-w-0">
+              <span id="render-status-dot" class="rd-dot rd-dot--lg rd-dot--amber rd-dot--pulse"></span>
+              <div class="rd-min-w-0">
+                <h2 class="rd-heading rd-heading--sm">APK Analiz &amp; İmzalama Sunucusu</h2>
+                <p id="render-status-text" class="rd-subtitle">Sunucu bağlantısı kontrol ediliyor...</p>
+              </div>
+            </div>
+            <button type="button" id="btn-check-render" class="rd-btn rd-btn--sky rd-btn--sm">
+              Bağlantıyı Test Et / Uyandır
+            </button>
+          </div>
+
+          <div class="rd-grid-url">
+            <div>
+              <label for="render-api-url" class="sr-only">Sunucu API adresi</label>
+              <input
+                id="render-api-url"
+                type="url"
+                placeholder="https://senin-servisin.onrender.com (aynı sunucudan açtıysan boş bırak)"
+                class="rd-input mono"
+              />
+            </div>
+            <button type="button" id="btn-save-render-url" class="rd-btn rd-btn--emerald">
+              Adresi Kaydet
+            </button>
+          </div>
+
+          <!-- İsteğe Bağlı API Anahtarı (yalnızca sessionStorage'da tutulur) -->
+          <div class="rd-stack-xs">
+            <div class="rd-row-between">
+              <label for="render-api-token" class="rd-label">API Erişim Anahtarı (İsteğe bağlı • yalnızca aktif oturumda saklanır)</label>
+              <span id="render-auth-badge" class="rd-badge">Anahtar Gerekmiyor</span>
+            </div>
+            <div class="rd-grid-token">
+              <input
+                id="render-api-token"
+                type="password"
+                autocomplete="off"
+                placeholder="Sunucuda API_TOKEN etkinse anahtarı buraya girin"
+                class="rd-input mono"
+              />
+              <button type="button" id="btn-save-api-token" class="rd-btn rd-btn--indigo rd-btn--sm">Oturuma Kaydet</button>
+              <button type="button" id="btn-clear-api-token" class="rd-btn rd-btn--sm">Temizle</button>
+            </div>
+          </div>
+
+          <!-- Sunucu Sağlık Rozetleri -->
+          <div id="server-health-chips" class="rd-row-wrap hidden"></div>
+
+          <!-- Keystore Sertifika Metadata Kartı -->
+          <div id="keystore-info-box" class="rd-keystore-box hidden">
+            <div class="rd-row-between">
+              <div class="rd-row-wrap">
+                <span class="rd-badge rd-badge--emerald">İmzalama Anahtarı</span>
+                <span id="keystore-alias" class="mono">—</span>
+                <span id="keystore-algo" class="rd-badge">—</span>
+                <span id="keystore-persist" class="rd-badge">—</span>
+                <span id="keystore-valid-until" class="rd-field-hint">Geçerlilik: —</span>
+              </div>
+              <button type="button" id="btn-copy-keystore-sha" class="rd-btn rd-btn--xs rd-btn--sky">SHA-256 Kopyala</button>
+            </div>
+            <div id="keystore-sha256" class="mono break-all rd-field-hint">SHA-256: —</div>
+          </div>
+
+          <!-- Canlı Parçalı Yükleme İlerleme & İptal Çubuğu -->
+          <div id="render-upload-progress-box" class="rd-subbox rd-subbox--emerald rd-stack-xs hidden" aria-live="polite">
+            <div class="rd-row-between">
+              <span id="render-upload-label" class="mono rd-metric-value--emerald">Sunucuya yükleniyor...</span>
+              <div class="rd-row">
+                <span id="render-upload-pct" class="mono rd-flag-title">0%</span>
+                <button type="button" id="btn-cancel-upload" class="rd-btn rd-btn--xs rd-btn--rose">İptal Et</button>
+              </div>
+            </div>
+            <div class="rd-progress-track">
+              <div id="render-upload-bar" class="rd-progress-fill"></div>
+            </div>
+            <div id="render-upload-speed" class="mono rd-field-hint">Hız hesaplanıyor...</div>
+          </div>
+        </div>
+
+        <!-- Bölüm 1: Dosya Yükleme, PK Başlık Doğrulama, APK+OBB, OBB Tarayıcı -->
+        <div class="glass-card rd-stack">
+          <div class="rd-section-head">
+            <div>
+              <h2 class="rd-heading">
+                <span class="rd-accent-bar" aria-hidden="true"></span>
+                APK &amp; XAPK Paket Analizi
+              </h2>
+              <p class="rd-subtitle">
+                5 GB (5120 MB) sınırına kadar paketleri PK/ZIP bayt başlığıyla doğrular ve devam ettirilebilir parçalı yüklemeyle sunucuya aktarır.
+              </p>
+            </div>
+            <span class="rd-badge rd-badge--pill rd-badge--sky mono">
+              Limit: 5.00 GB (.apk / .xapk / .apks / .apkm / .zip)
+            </span>
+          </div>
+
+          <!-- Sürükle & Bırak Alanı -->
+          <div id="dropzone" class="rd-dropzone" role="region" aria-label="APK, XAPK, APKS, APKM, ZIP veya OBB dosya yükleme alanı">
+            <input id="file-input" type="file" accept=".apk,.xapk,.apks,.apkm,.zip,.obb" class="hidden" />
+            <div class="rd-dropzone-inner">
+              <div class="rd-icon-tile rd-icon-tile--lg rd-icon-tile--emerald" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke-linecap="round" />
+                  <polyline points="17 8 12 3 7 8" stroke-linecap="round" stroke-linejoin="round" />
+                  <line x1="12" y1="3" x2="12" y2="15" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div>
+                <p class="rd-heading rd-heading--sm">APK, XAPK, APKS, APKM, ZIP veya OBB dosyasını buraya sürükleyin</p>
+                <p class="rd-subtitle">veya cihazınızdan seçmek için dokunun • Maksimum 5 GB</p>
+              </div>
+              <button type="button" id="btn-browse-file" class="rd-btn">
+                Dosya Seç (.apk / .xapk / .apks / .apkm / .zip / .obb)
+              </button>
+            </div>
+          </div>
+
+          <!-- APK + OBB Eşleştirme -->
+          <div class="rd-subbox rd-subbox--sky rd-stack-sm">
+            <div>
+              <h3 class="rd-heading rd-heading--sm">APK + OBB Birlikte Ekle</h3>
+              <p class="rd-subtitle">APK ve OBB dosyalarını birlikte seçin. OBB dosyası standart Android/obb/&lt;paket&gt;/main.&lt;sürüm&gt;.&lt;paket&gt;.obb adıyla eşlenir.</p>
+            </div>
+            <div class="rd-grid-2">
+              <label for="pair-apk-input" class="rd-label">APK dosyası
+                <input id="pair-apk-input" type="file" accept=".apk" class="rd-file-input" />
+              </label>
+              <label for="pair-obb-input" class="rd-label">OBB dosyası
+                <input id="pair-obb-input" type="file" accept=".obb" class="rd-file-input" />
+              </label>
+            </div>
+            <label for="pair-package-id" class="rd-label">Android paket kimliği (package name — büyük/küçük harf duyarlı)
+              <input id="pair-package-id" type="text" value="" placeholder="ör. com.oyun.studio" class="rd-input mono" />
+            </label>
+            <div class="rd-row-wrap">
+              <button type="button" id="btn-pair-analyze" class="rd-btn rd-btn--sky">APK + OBB Eşleştir</button>
+              <button type="button" id="btn-pair-export" disabled class="rd-btn rd-btn--emerald">Kurulum klasörünü ZIP indir</button>
+            </div>
+            <p id="pair-status" class="rd-field-hint" aria-live="polite">Henüz dosya seçilmedi. OBB dosyası yeniden yazılmaz; doğru Android/obb dizinine yerleştirilir.</p>
+          </div>
+
+          <!-- OBB Klasör & Çoklu Dosya Tarayıcısı (Mobil + Masaüstü) -->
+          <div class="rd-subbox rd-subbox--violet rd-stack-sm">
+            <div class="rd-row-between">
+              <div>
+                <h3 class="rd-heading rd-heading--sm">OBB Dosya &amp; Klasör Tarayıcı</h3>
+                <p class="rd-subtitle">Masaüstünde klasör seçin veya mobilde birden fazla .obb dosyasını doğrudan seçip parçalı olarak sunucuya aktarın.</p>
+              </div>
+              <span id="obb-folder-count" class="rd-badge rd-badge--pill rd-badge--violet">0 OBB</span>
+            </div>
+            <input id="obb-folder-input" type="file" webkitdirectory directory multiple class="hidden" />
+            <input id="obb-files-input" type="file" accept=".obb" multiple class="hidden" />
+            <div class="rd-row-wrap">
+              <button type="button" id="btn-browse-obb-folder" class="rd-btn rd-btn--violet">Klasör Seç</button>
+              <button type="button" id="btn-browse-obb-files" class="rd-btn rd-btn--indigo">Çoklu .obb Seç (Mobil)</button>
+              <button type="button" id="btn-upload-obb-folder" disabled class="rd-btn rd-btn--sky">Sunucuya OBB Aktar</button>
+              <button type="button" id="btn-clear-obb-folder" class="rd-btn">Temizle</button>
+            </div>
+            <div id="obb-upload-progress-box" class="rd-subbox rd-stack-xs hidden" aria-live="polite">
+              <div class="rd-row-between">
+                <span id="obb-upload-label" class="mono rd-field-hint">OBB yükleniyor...</span>
+                <div class="rd-row">
+                  <span id="obb-upload-pct" class="mono rd-flag-title">0%</span>
+                  <button type="button" id="btn-cancel-obb-upload" class="rd-btn rd-btn--xs rd-btn--rose">İptal Et</button>
+                </div>
+              </div>
+              <div class="rd-progress-track">
+                <div id="obb-upload-bar" class="rd-progress-fill rd-progress-fill--violet"></div>
+              </div>
+            </div>
+            <div id="obb-folder-list" class="rd-scroll-list" aria-live="polite">Henüz OBB seçilmedi.</div>
+            <p id="obb-folder-status" class="rd-field-hint">Tam XAPK oluşturmak için APK'nın sunucuda imzalanmış ve doğrulanmış olması gerekir.</p>
+          </div>
+
+          <!-- Hata Uyarı Kutusu -->
+          <div id="upload-error-box" class="rd-subbox rd-subbox--rose rd-row hidden" role="alert">
+            <div class="rd-icon-tile rd-icon-tile--rose" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+            <div class="rd-stack-xs">
+              <p id="upload-error-title" class="rd-flag-title rd-metric-value--rose">Dosya Hatası</p>
+              <p id="upload-error-msg" class="rd-field-hint"></p>
+            </div>
+          </div>
+
+          <!-- Hızlı Test İçin Örnek Paketler -->
+          <div class="rd-stack-sm">
+            <div class="rd-row-between">
+              <span class="rd-kicker">Hızlı Test İçin Örnek Eski Oyun Paketleri</span>
+              <span class="rd-field-hint">Yerel önizleme profili yükler</span>
+            </div>
+            <div id="demo-packages-grid" class="rd-grid-2"></div>
+          </div>
+        </div>
+
+        <!-- Seçili Paket Analiz & Yama Kartı -->
+        <div id="selected-package-card" class="glass-card glass-card--emerald rd-stack hidden">
+          <div class="rd-row-between rd-divider-b">
+            <div class="rd-row rd-min-w-0">
+              <div id="pkg-icon-box" class="rd-icon-tile rd-icon-tile--lg rd-icon-tile--emerald"></div>
+              <div class="rd-min-w-0">
+                <div class="rd-row-wrap">
+                  <h3 id="pkg-name" class="rd-heading truncate">Paket Adı</h3>
+                  <span id="pkg-ext-badge" class="rd-badge rd-badge--emerald">XAPK</span>
+                </div>
+                <p id="pkg-filename" class="rd-field-hint mono truncate">dosya.xapk</p>
+              </div>
+            </div>
+            <span id="pkg-compat-estimate" class="rd-badge rd-badge--emerald">Uyum Puanı: —</span>
+          </div>
+
+          <!-- Teknik Metrikler -->
+          <div class="rd-grid-4">
+            <div class="rd-metric-cell">
+              <span class="rd-metric-label">Dosya Boyutu</span>
+              <span id="pkg-size" class="rd-metric-value mono">0 MB</span>
+            </div>
+            <div class="rd-metric-cell">
+              <span class="rd-metric-label">SDK Seviyesi</span>
+              <span id="pkg-android" class="rd-metric-value rd-metric-value--amber">—</span>
+            </div>
+            <div class="rd-metric-cell">
+              <span class="rd-metric-label">ZIP / APK Başlığı</span>
+              <span id="pkg-signature" class="rd-metric-value rd-metric-value--emerald mono truncate">—</span>
+            </div>
+            <div class="rd-metric-cell">
+              <span class="rd-metric-label">Mimari &amp; OBB</span>
+              <span id="pkg-arch" class="rd-metric-value rd-metric-value--sky truncate">—</span>
+            </div>
+          </div>
+
+          <!-- Sunucu Uyarıları -->
+          <div id="pkg-server-warnings" class="rd-subbox rd-subbox--amber rd-stack-xs hidden"></div>
+
+          <!-- Gelişmiş Android 15–17 / 16 KB ELF / İzin / DEX / İmza Müfettişi -->
+          <div id="pkg-inspector" class="rd-subbox rd-subbox--indigo rd-stack-sm">
+            <div class="rd-row-between">
+              <div>
+                <h4 class="rd-heading rd-heading--xs">APK Teknik Müfettişi (aapt • ELF64 16 KB • apksigner)</h4>
+                <p class="rd-field-hint">Android 14–17 kurulum eşiği, 16 KB PT_LOAD hizalama, resources.arsc ve API 31+ exported denetimi</p>
+              </div>
+              <div class="rd-row-wrap">
+                <span id="pkg-inspector-score" class="rd-badge rd-badge--indigo">Puan: —</span>
+                <span id="pkg-inspector-status" class="rd-badge rd-badge--amber">Analiz bekleniyor</span>
+              </div>
+            </div>
+
+            <div class="rd-grid-3">
+              <div class="rd-metric-cell">
+                <span class="rd-metric-label">İzin Sayısı</span>
+                <strong id="pkg-inspector-permission-count" class="rd-metric-value">—</strong>
+              </div>
+              <div class="rd-metric-cell">
+                <span class="rd-metric-label">DEX Dosyası</span>
+                <strong id="pkg-inspector-dex-count" class="rd-metric-value">—</strong>
+              </div>
+              <div class="rd-metric-cell">
+                <span class="rd-metric-label">İmza Durumu</span>
+                <strong id="pkg-inspector-signature" class="rd-metric-value">—</strong>
+              </div>
+            </div>
+
+            <!-- Android 14–17 Tanı Gridi (F05) -->
+            <div class="rd-grid-2">
+              <div class="rd-metric-cell">
+                <span class="rd-metric-label">Android 14–17 Kurulum Eşiği</span>
+                <div id="pkg-inspector-install-floor" class="rd-field-hint">Sunucu analizi bekleniyor.</div>
+              </div>
+              <div class="rd-metric-cell">
+                <span class="rd-metric-label">16 KB Bellek Sayfası (ELF64 PT_LOAD)</span>
+                <div id="pkg-inspector-16k" class="rd-field-hint">Sunucu analizi bekleniyor.</div>
+              </div>
+              <div class="rd-metric-cell">
+                <span class="rd-metric-label">resources.arsc Sıkıştırma</span>
+                <div id="pkg-inspector-arsc" class="rd-field-hint">Sunucu analizi bekleniyor.</div>
+              </div>
+              <div class="rd-metric-cell">
+                <span class="rd-metric-label">API 31+ Eksik android:exported</span>
+                <div id="pkg-inspector-exported" class="rd-field-hint">Sunucu analizi bekleniyor.</div>
+              </div>
+            </div>
+
+            <!-- Kanıta Dayalı Uyumluluk Kontrol Listesi -->
+            <div class="rd-metric-cell rd-stack-xs">
+              <span class="rd-metric-label">Kanıta Dayalı Uyumluluk Kontrol Listesi</span>
+              <div id="pkg-inspector-checklist" class="rd-scroll-list">Sunucu analizi sonrasında kontrol maddeleri listelenir.</div>
+            </div>
+
+            <div class="rd-grid-2">
+              <div class="rd-metric-cell">
+                <span class="rd-metric-label">Manifest İzinleri</span>
+                <div id="pkg-inspector-permissions" class="rd-scroll-list">Sunucu analizi gerekli.</div>
+              </div>
+              <div class="rd-metric-cell">
+                <span class="rd-metric-label">DEX Dosyaları ve İmza Şemaları</span>
+                <div id="pkg-inspector-dex" class="rd-scroll-list">classes.dex bilgisi bekleniyor.</div>
+                <div id="pkg-inspector-schemes" class="rd-field-hint">v1 / v2 / v3 kontrolü bekleniyor.</div>
+              </div>
+            </div>
+            <p id="pkg-inspector-cert" class="mono break-all rd-field-hint">Sertifika SHA-256: —</p>
+          </div>
+
+          <!-- BÖLÜM A: GERÇEK SUNUCU APK YAMALARI (F06 & F11 Dürüst Ayrım) -->
+          <div class="rd-subbox rd-subbox--emerald rd-stack-sm">
+            <div class="rd-row-between">
+              <div>
+                <h4 class="rd-heading rd-heading--sm">Gerçek Sunucu APK Yamaları</h4>
+                <p class="rd-field-hint">Bu seçenekler doğrudan sunucuda AndroidManifest.xml, zipalign ve apksigner hattına gönderilir.</p>
+              </div>
+              <span class="rd-badge rd-badge--emerald">APK İkili Dosyasına Uygulanır</span>
+            </div>
+
+            <div class="rd-grid-2">
+              <div>
+                <label for="patch-target-sdk" class="rd-label">Hedef targetSdkVersion (API 24–36)</label>
+                <select id="patch-target-sdk" class="rd-select">
+                  <option value="24">API 24 — Android 7.0 (Android 15–17 en düşük kurulum eşiği)</option>
+                  <option value="26">API 26 — Android 8.0 Oreo</option>
+                  <option value="28" selected>API 28 — Android 9 Pie (Önerilen • En Yüksek Eski Oyun Uyumu)</option>
+                  <option value="29">API 29 — Android 10 (Scoped Storage geçişi)</option>
+                  <option value="30">API 30 — Android 11 (ZIP_STORED resources.arsc zorunlu)</option>
+                  <option value="31">API 31 — Android 12 (Otomatik android:exported ekler)</option>
+                  <option value="33">API 33 — Android 13 (Otomatik android:exported ekler)</option>
+                  <option value="34">API 34 — Android 14 (Otomatik android:exported ekler)</option>
+                  <option value="35">API 35 — Android 15 (Otomatik android:exported ekler)</option>
+                  <option value="36">API 36 — Android 16 (Otomatik android:exported ekler)</option>
+                </select>
+                <p id="patch-target-sdk-hint" class="rd-field-hint">API 28, Android 14 (min API 23) ve Android 15–17 (min API 24) kurulum engelini güvenle aşar.</p>
+              </div>
+
+              <div>
+                <label for="patch-server-mode" class="rd-label">İşleme Modu (Sunucu Hattı)</label>
+                <select id="patch-server-mode" class="rd-select">
+                  <option value="patch_and_sign" selected>Manifest Yamala + Hizala (zipalign) + İmzala (v1/v2/v3)</option>
+                  <option value="resign_only">Yalnızca Hizala &amp; İmzala (AndroidManifest.xml değişmez)</option>
+                </select>
+                <p id="patch-server-mode-hint" class="rd-field-hint">Hızlı binary AXML veya yapısal bayraklar seçiliyse slim-apktool uygulanır; hata durumunda açık gerekçeyle yedek moda geçilir.</p>
+              </div>
+            </div>
+
+            <!-- Sunucu Manifest Bayrakları (1:1 POST /api/patch-sign Form alanları) -->
+            <div id="server-patch-flags" class="rd-grid-2">
+              <label class="rd-flag-card rd-flag-card--active" data-flag-card="patchTargetSdk">
+                <div>
+                  <span class="rd-flag-title">targetSdkVersion Yükselt</span>
+                  <span class="rd-flag-desc">AndroidManifest.xml içinde &lt;uses-sdk&gt; hedef API düzeyini seçili değere günceller.</span>
+                </div>
+                <span class="toggle-wrap">
+                  <input id="flag-patch-target-sdk" type="checkbox" class="sr-only toggle-checkbox" data-server-flag="patchTargetSdk" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+
+              <label class="rd-flag-card rd-flag-card--active" data-flag-card="resign">
+                <div>
+                  <span class="rd-flag-title">v1 / v2 / v3 Yeniden İmzalama</span>
+                  <span class="rd-flag-desc">zipalign + apksigner ile paketi kurulum için imzalar ve doğrular.</span>
+                </div>
+                <span class="toggle-wrap">
+                  <input id="flag-resign" type="checkbox" class="sr-only toggle-checkbox" data-server-flag="resign" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+
+              <label class="rd-flag-card" data-flag-card="addLegacyStorage">
+                <div>
+                  <span class="rd-flag-title">requestLegacyExternalStorage="true"</span>
+                  <span class="rd-flag-desc">Android 10 uyumluluğu için &lt;application&gt; etiketine eski depolama bayrağını ekler (slim-apktool).</span>
+                </div>
+                <span class="toggle-wrap">
+                  <input id="flag-legacy-storage" type="checkbox" class="sr-only toggle-checkbox" data-server-flag="addLegacyStorage" />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+
+              <label class="rd-flag-card" data-flag-card="enableCleartext">
+                <div>
+                  <span class="rd-flag-title">usesCleartextTraffic="true"</span>
+                  <span class="rd-flag-desc">Eski oyunların HTTP kaynak/doğrulama bağlantılarına izin verir (slim-apktool).</span>
+                </div>
+                <span class="toggle-wrap">
+                  <input id="flag-cleartext" type="checkbox" class="sr-only toggle-checkbox" data-server-flag="enableCleartext" />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+
+              <label class="rd-flag-card" data-flag-card="addNotchSupport">
+                <div>
+                  <span class="rd-flag-title">Geniş Ekran / Çentik Desteği (max_aspect 2.4)</span>
+                  <span class="rd-flag-desc">resizeableActivity="true" ve android.max_aspect="2.4" meta-data ekler (slim-apktool).</span>
+                </div>
+                <span class="toggle-wrap">
+                  <input id="flag-notch-support" type="checkbox" class="sr-only toggle-checkbox" data-server-flag="addNotchSupport" />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+
+              <label class="rd-flag-card" data-flag-card="forceExtractNativeLibs">
+                <div>
+                  <span class="rd-flag-title">extractNativeLibs="true"</span>
+                  <span class="rd-flag-desc">Eski .so kütüphanelerinin kurulumda disk üzerine çıkarılmasını sağlar (slim-apktool).</span>
+                </div>
+                <span class="toggle-wrap">
+                  <input id="flag-extract-native-libs" type="checkbox" class="sr-only toggle-checkbox" data-server-flag="forceExtractNativeLibs" />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+
+              <label class="rd-flag-card" data-flag-card="allowDowngrade">
+                <div>
+                  <span class="rd-flag-title">targetSdk Düşürmeye İzin Ver</span>
+                  <span class="rd-flag-desc">Kapalıysa mevcut targetSdk seçili hedeften yüksek olduğunda sunucu düşürmeyi atlar.</span>
+                </div>
+                <span class="toggle-wrap">
+                  <input id="flag-allow-downgrade" type="checkbox" class="sr-only toggle-checkbox" data-server-flag="allowDowngrade" />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+            </div>
+            <p id="server-patch-flags-hint" class="rd-field-hint"></p>
+          </div>
+
+          <!-- BÖLÜM B: WEB ÖNİZLEME / PROFİL NOTLARI (Dürüst Ayrım) -->
+          <div class="rd-subbox rd-stack-sm">
+            <div class="rd-row-between">
+              <div>
+                <h4 class="rd-heading rd-heading--sm">Web Önizleme / Profil Notları</h4>
+                <p class="rd-field-hint">Yalnızca kütüphane profili, JSON uyumluluk raporu ve kurulum rehberi notları için kullanılır; APK ikili kodunu değiştirmez.</p>
+              </div>
+              <div class="rd-row-wrap">
+                <span class="rd-badge rd-badge--indigo">APK İkili Dosyasını Değiştirmez</span>
+                <span id="active-modules-count" class="rd-badge rd-badge--sky">0/0 Not Aktif</span>
+              </div>
+            </div>
+            <div id="patch-modules-list" class="rd-grid-2"></div>
+          </div>
+
+          <!-- Eylem Butonları -->
+          <div class="rd-row-between rd-divider">
+            <p class="rd-field-hint">Sunucu bağlıysa gerçek imzalı APK üretilir; sunucu kapalıysa yalnızca profil kaydı oluşturulur.</p>
+            <div class="rd-row-wrap">
+              <button type="button" id="btn-download-selected-pkg" class="rd-btn rd-btn--sky">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Cihaza İndir
+              </button>
+              <button type="button" id="btn-start-patch" class="rd-btn neon-btn rd-btn--lg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linejoin="round" />
+                </svg>
+                Uyumlu Hale Getir
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Canlı Terminal, Yama Özeti, Tam XAPK İlerleme & İş Geçmişi -->
+        <div id="patcher-terminal-panel" class="glass-card glass-card--sky rd-stack hidden">
+          <div class="rd-row-between">
+            <div class="rd-row rd-min-w-0">
+              <span id="terminal-status-dot" class="rd-dot rd-dot--lg rd-dot--sky rd-dot--pulse"></span>
+              <h3 id="terminal-status-title" class="rd-heading rd-heading--sm">İşlem hazırlanıyor...</h3>
+            </div>
+            <div class="rd-row">
+              <span id="patch-percent-label" class="mono rd-metric-value--emerald">0%</span>
+              <button type="button" id="btn-cancel-patch" class="rd-btn rd-btn--xs rd-btn--rose hidden">İşlemi İptal Et</button>
+            </div>
+          </div>
+
+          <div class="rd-progress-track rd-progress-track--lg">
+            <div id="patch-progress-bar" class="rd-progress-fill"></div>
+          </div>
+
+          <div id="terminal-logs" class="rd-terminal" aria-live="polite"></div>
+
+          <!-- Gerçek Yama Özeti (patchSummary) -->
+          <div id="patch-summary-box" class="rd-subbox rd-subbox--indigo rd-stack-xs hidden"></div>
+
+          <!-- Tam XAPK Oluşturma Satır İçi İlerleme Çubuğu (Modal dışından tetiklenince de görünür) -->
+          <div id="terminal-xapk-progress-box" class="rd-subbox rd-subbox--violet rd-stack-xs hidden" aria-live="polite">
+            <div class="rd-row-between">
+              <span id="terminal-xapk-label" class="mono rd-field-hint">Tam XAPK hazırlanıyor...</span>
+              <span id="terminal-xapk-pct" class="mono rd-flag-title">0%</span>
+            </div>
+            <div class="rd-progress-track">
+              <div id="terminal-xapk-bar" class="rd-progress-fill rd-progress-fill--violet"></div>
+            </div>
+          </div>
+
+          <!-- Tamamlandı Eylemleri -->
+          <div id="patch-complete-actions" class="rd-row-between rd-divider hidden">
+            <div class="rd-row rd-min-w-0">
+              <span class="rd-dot rd-dot--emerald"></span>
+              <span id="patch-complete-msg" class="rd-flag-title rd-metric-value--emerald">Paket kütüphaneye eklendi.</span>
+            </div>
+            <div class="rd-row-wrap">
+              <button type="button" id="btn-download-patched-pkg" class="rd-btn rd-btn--emerald">Dosyayı Cihaza İndir</button>
+              <button type="button" id="btn-download-full-xapk" class="rd-btn rd-btn--violet hidden">İmzalı Tam XAPK + OBB</button>
+              <button type="button" id="btn-download-report" class="rd-btn rd-btn--sky">Rapor (.json)</button>
+              <button type="button" id="btn-launch-patched" class="rd-btn neon-btn">Önizlemeyi Başlat</button>
+              <button type="button" data-switch-tab="library" class="rd-btn rd-btn--emerald">Kütüphane</button>
+            </div>
+          </div>
+
+          <div id="patch-link-expiry" class="rd-subbox rd-subbox--amber hidden"></div>
+
+          <!-- Sunucu Son İşler Geçmişi -->
+          <div class="rd-stack-xs">
+            <div class="rd-row-between">
+              <span class="rd-kicker">Sunucu İş Geçmişi</span>
+              <button type="button" id="btn-refresh-jobs" class="rd-btn--link">Yenile</button>
+            </div>
+            <div id="patch-jobs-list" class="rd-scroll-list rd-scroll-list--lg">
+              <div class="rd-field-hint">Henüz sunucu işi yok.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- SEKME 3: HAZIR İŞLEME VE ÖNİZLEME PROFİLLERİ                        -->
+      <!-- =================================================================== -->
+      <section id="tab-engine" class="tab-section hidden" role="tabpanel" aria-labelledby="nav-tab-engine">
+        <div class="rd-section-head">
+          <div>
+            <h2 class="rd-heading rd-heading--lg">Hazır İşleme ve Önizleme Profilleri</h2>
+            <p class="rd-subtitle">Varsayılan manifest yama önayarlarını, kurulum rehberi notlarını ve tarayıcı önizleme ayarlarını seçin.</p>
+          </div>
+          <span class="rd-badge rd-badge--pill rd-badge--emerald mono">Otomatik Kayıt: Aktif</span>
+        </div>
+
+        <div id="profiles-grid" class="rd-grid-3"></div>
+
+        <div class="glass-card rd-stack">
+          <div class="rd-row-between">
+            <h3 class="rd-heading rd-heading--sm">Analiz Hedefi ve Web Önizleme Parametreleri</h3>
+            <span class="rd-badge rd-badge--indigo">Profil &amp; Rapor Önayarları</span>
+          </div>
+
+          <div class="rd-grid-2">
+            <div class="rd-subbox rd-stack-xs">
+              <label for="engine-abi" class="rd-label">Hedef Cihaz Mimari Notu (ABI Denetimi)</label>
+              <select id="engine-abi" class="rd-select">
+                <option value="Otomatik ABI Denetimi (ARM64 + 32-bit Uyarı)">Otomatik ABI Denetimi (ARM64 + 32-bit Uyarı)</option>
+                <option value="Yalnızca 64-bit Cihazlar (ARM64-v8a / 16 KB Kontrol)">Yalnızca 64-bit Cihazlar (ARM64-v8a / 16 KB Kontrol)</option>
+                <option value="Hibrit 32/64-bit Cihazlar (ARMv7a + ARM64)">Hibrit 32/64-bit Cihazlar (ARMv7a + ARM64)</option>
+              </select>
+              <p class="rd-field-hint">Uyumluluk raporunda hedef cihazınızın 32-bit / 64-bit donanım beklentisini belirtir. İkili makine kodu çevirisi yapılmaz.</p>
+            </div>
+
+            <div class="rd-subbox rd-stack-xs">
+              <label for="engine-renderer" class="rd-label">Önizleme Ekran Profili &amp; Kurulum Notu</label>
+              <select id="engine-renderer" class="rd-select">
+                <option value="Standart Android 14–16 Profili (API 28 Hedef)">Standart Android 14–16 Profili (API 28 Hedef)</option>
+                <option value="Geniş Ekran 20:9 + Yüksek FPS Önizleme">Geniş Ekran 20:9 + Yüksek FPS Önizleme</option>
+                <option value="Klasik 2D / Düşük Kaynak Önizleme">Klasik 2D / Düşük Kaynak Önizleme</option>
+              </select>
+              <p class="rd-field-hint">Tarayıcı önizleme sahnesi ve kurulum rehberi önerileri için kullanılır; GPU sürücüsü veya shader yaması uygulanmaz.</p>
+            </div>
+
+            <div class="rd-subbox rd-stack-xs">
+              <div class="rd-row-between">
+                <label for="engine-ram" class="rd-label">Önizleme Hedef Bellek Etiketi</label>
+                <span id="engine-ram-val" class="mono rd-metric-value--emerald">4096 MB</span>
+              </div>
+              <input id="engine-ram" type="range" min="1024" max="8192" step="512" value="4096" class="rd-range" />
+              <div class="rd-row-between mono rd-field-hint">
+                <span>1 GB</span><span>4 GB</span><span>8 GB</span>
+              </div>
+            </div>
+
+            <div class="rd-subbox rd-stack-sm">
+              <label class="rd-row-between">
+                <div>
+                  <span class="rd-flag-title">Kurulum Rehberinde OBB/SAF Notları</span>
+                  <span class="rd-flag-desc">Dışa aktarılan KURULUM_REHBERI.txt içine Android 11+ /Android/obb taşıma adımlarını ekler.</span>
+                </div>
+                <span class="toggle-wrap">
+                  <input id="engine-scoped-obb" type="checkbox" class="sr-only toggle-checkbox" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+
+              <label class="rd-row-between">
+                <div>
+                  <span class="rd-flag-title">Eski Android API Uyarı Notları</span>
+                  <span class="rd-flag-desc">JSON raporunda Android 14 (min API 23) ve Android 15–17 (min API 24) kurulum kurallarını detaylandırır.</span>
+                </div>
+                <span class="toggle-wrap">
+                  <input id="engine-audio-fix" type="checkbox" class="sr-only toggle-checkbox" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- SEKME 4: SİSTEM, DEPOLAMA GRAFİĞİ VE ANDROID UYUMLULUK MATRİSİ      -->
+      <!-- =================================================================== -->
+      <section id="tab-system" class="tab-section hidden" role="tabpanel" aria-labelledby="nav-tab-system">
+        <div class="rd-grid-2">
+          <!-- Paket Limiti & Yedekleme -->
+          <div class="glass-card rd-stack">
+            <div class="rd-row-between">
+              <div>
+                <span class="rd-kicker">Tekil Paket İşleme Kapasitesi</span>
+                <h3 class="rd-heading rd-heading--lg">Maksimum 5.00 GB Limiti</h3>
+                <p class="rd-subtitle">Büyük APK/XAPK/APKS/OBB dosyaları akışlı (streaming) parçalı yükleyici ile 5120 MB sınırına kadar işlenir.</p>
+              </div>
+              <div class="rd-icon-tile rd-icon-tile--lg rd-icon-tile--sky mono">5GB</div>
+            </div>
+
+            <div class="rd-subbox rd-stack-xs">
+              <div class="rd-row-between">
+                <span class="rd-field-hint">Kütüphanedeki En Büyük Paket</span>
+                <span id="sys-largest-pkg" class="mono rd-metric-value--emerald">0 GB / 5.00 GB</span>
+              </div>
+              <div class="rd-progress-track">
+                <div id="sys-largest-bar" class="rd-progress-fill"></div>
+              </div>
+              <div class="rd-row-between mono rd-field-hint">
+                <span>0 MB</span><span>2.5 GB</span><span>5.0 GB (5120 MB)</span>
+              </div>
+            </div>
+
+            <div class="rd-grid-2">
+              <button type="button" id="btn-clear-cache" class="rd-btn">Önizleme Önbelleğini Temizle</button>
+              <button type="button" id="btn-copy-sysinfo" class="rd-btn rd-btn--sky">Sistem Raporunu Kopyala</button>
+              <button type="button" id="btn-export-backup" class="rd-btn rd-btn--emerald">Yedeği İndir (.json)</button>
+              <button type="button" id="btn-import-backup" class="rd-btn rd-btn--violet">Yedekten Geri Yükle</button>
+            </div>
+            <input id="backup-file-input" type="file" accept=".json,application/json" class="hidden" />
+            <button type="button" id="btn-reset-app" class="rd-btn rd-btn--rose rd-btn--full">Varsayılan Verileri Sıfırla</button>
+          </div>
+
+          <!-- Depolama Dağılımı SVG Donut -->
+          <div class="glass-card rd-stack">
+            <div class="rd-row-between">
+              <div>
+                <span class="rd-kicker rd-kicker--emerald">Kütüphane Depolama Kotası (32 GB)</span>
+                <h3 class="rd-heading rd-heading--lg">Paket Depolama Dağılımı</h3>
+              </div>
+              <span id="sandbox-used-pct" class="mono rd-metric-value--emerald">%0.0</span>
+            </div>
+
+            <div class="rd-donut-layout">
+              <div class="rd-donut-wrap">
+                <svg class="rd-donut-svg" viewBox="0 0 120 120" aria-hidden="true">
+                  <circle cx="60" cy="60" r="48" fill="none" stroke="#1e293b" stroke-width="12" />
+                  <circle id="donut-xapk" class="rd-donut-seg" cx="60" cy="60" r="48" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="butt" stroke-dasharray="0 301.59" stroke-dashoffset="0" />
+                  <circle id="donut-apk" class="rd-donut-seg" cx="60" cy="60" r="48" fill="none" stroke="#0ea5e9" stroke-width="12" stroke-linecap="butt" stroke-dasharray="0 301.59" stroke-dashoffset="0" />
+                  <circle id="donut-cache" class="rd-donut-seg" cx="60" cy="60" r="48" fill="none" stroke="#a855f7" stroke-width="12" stroke-linecap="butt" stroke-dasharray="0 301.59" stroke-dashoffset="0" />
+                </svg>
+                <div class="rd-donut-center">
+                  <span id="donut-total-gb" class="rd-donut-total mono">0 GB</span>
+                  <span class="rd-donut-quota">/ 32 GB</span>
+                </div>
+              </div>
+
+              <div class="rd-flex-1 rd-stack-sm">
+                <div class="rd-legend-row">
+                  <span class="rd-row"><span class="rd-dot rd-dot--emerald"></span>Konteyner Paketleri (XAPK/APKS/APKM/OBB/ZIP)</span>
+                  <span id="storage-xapk-val" class="mono">0 GB</span>
+                </div>
+                <div class="rd-legend-row">
+                  <span class="rd-row"><span class="rd-dot rd-dot--sky"></span>Tekil APK Dosyaları</span>
+                  <span id="storage-apk-val" class="mono">0 MB</span>
+                </div>
+                <div class="rd-legend-row">
+                  <span class="rd-row"><span class="rd-dot rd-dot--violet"></span>Yerel Önizleme Önbelleği</span>
+                  <span id="storage-cache-val" class="mono">120 MB</span>
+                </div>
+                <div class="rd-legend-row rd-divider">
+                  <span class="rd-row"><span class="rd-dot rd-dot--slate"></span>Kalan Kota</span>
+                  <span id="storage-free-val" class="mono rd-metric-value--emerald">31.8 GB</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Android Sürüm ve Kurulum Eşiği Matrisi -->
+        <div class="glass-card rd-stack">
+          <div class="rd-section-head">
+            <div>
+              <h3 class="rd-heading">Android API &amp; Kurulum Eşiği Referansı</h3>
+              <p class="rd-subtitle">Android 2.3 (API 9) paketlerinden Android 15–17 (API 35–36) hedeflerine kadar kurulum eşikleri ve 16 KB / exported kuralları.</p>
+            </div>
+            <span class="rd-badge rd-badge--pill rd-badge--emerald">API 9 → API 24–36</span>
+          </div>
+          <div id="android-versions-grid" class="rd-grid-3"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ALT GEZİNME ÇUBUĞU (WCAG TABLIST) -->
+    <nav class="rd-nav" aria-label="Ana uygulama sekmeleri">
+      <div class="rd-nav-grid" role="tablist" aria-label="Uygulama bölümleri">
+        <button type="button" id="nav-tab-library" role="tab" aria-selected="true" aria-controls="tab-library" data-tab="library" class="nav-btn nav-btn--active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="3" width="7" height="7" rx="1.5" />
+            <rect x="3" y="14" width="7" height="7" rx="1.5" />
+            <rect x="14" y="14" width="7" height="7" rx="1.5" />
+          </svg>
+          <span>Kütüphane</span>
+        </button>
+
+        <button type="button" id="nav-tab-patcher" role="tab" aria-selected="false" aria-controls="tab-patcher" data-tab="patcher" class="nav-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          <span>Yükle &amp; Yamala</span>
+        </button>
+
+        <button type="button" id="nav-tab-engine" role="tab" aria-selected="false" aria-controls="tab-engine" data-tab="engine" class="nav-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          <span>Profiller</span>
+        </button>
+
+        <button type="button" id="nav-tab-system" role="tab" aria-selected="false" aria-controls="tab-system" data-tab="system" class="nav-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="4" y="4" width="16" height="16" rx="2" />
+            <rect x="9" y="9" width="6" height="6" />
+            <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
+          </svg>
+          <span>Sistem</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- MODAL 1: OYUN HIZLI AYARLAR PENCERESİ                               -->
+  <!-- =================================================================== -->
+  <div id="modal-game-settings" class="rd-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="settings-game-title">
+    <div class="glass-card rd-modal-panel rd-stack">
+      <div class="rd-row-between">
+        <div>
+          <span class="rd-kicker rd-kicker--emerald">Oyun Profili &amp; Önizleme Ayarları</span>
+          <h3 id="settings-game-title" class="rd-heading">Oyun Adı</h3>
+        </div>
+        <button type="button" data-close-modal="game-settings" class="rd-btn rd-btn--icon" aria-label="Oyun ayarları penceresini kapat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="rd-stack-xs">
+        <span class="rd-label">Önizleme Kare Hızı (FPS Limiti)</span>
+        <div class="rd-grid-4" role="group" aria-label="FPS seçimi">
+          <button type="button" data-fps="30" class="fps-opt">30 FPS</button>
+          <button type="button" data-fps="60" class="fps-opt">60 FPS</button>
+          <button type="button" data-fps="90" class="fps-opt">90 FPS</button>
+          <button type="button" data-fps="120" class="fps-opt">120 FPS</button>
+        </div>
+      </div>
+
+      <div class="rd-stack-xs">
+        <div class="rd-row-between">
+          <label for="settings-res-range" class="rd-label">Önizleme Çözünürlük Ölçeği</label>
+          <span id="settings-res-label" class="mono rd-metric-value--sky">%100</span>
+        </div>
+        <input id="settings-res-range" type="range" min="75" max="150" step="25" value="100" class="rd-range" />
+        <div class="rd-row-between mono rd-field-hint">
+          <span>%75</span><span>%100</span><span>%125</span><span>%150</span>
+        </div>
+      </div>
+
+      <div class="rd-stack-xs">
+        <label for="settings-control-mode" class="rd-label">Önizleme Kontrol Katmanı</label>
+        <select id="settings-control-mode" class="rd-select">
+          <option value="Sanal Gamepad Katmanı">Sanal Gamepad Katmanı (Önerilen)</option>
+          <option value="Eski Dokunmatik Ölçekleme">Eski Dokunmatik Ölçekleme (16:9)</option>
+          <option value="Bluetooth / USB Kontrolcü">Bluetooth / USB Kontrolcü (Klavye/Gamepad)</option>
+        </select>
+        <button type="button" id="btn-edit-control-layout" class="rd-btn rd-btn--indigo rd-btn--full">
+          Özel Kontrol Düzenini Düzenle
+        </button>
+      </div>
+
+      <div class="rd-row-between rd-divider">
+        <button type="button" id="btn-delete-game-modal" class="rd-btn rd-btn--rose">Oyunu Sil</button>
+        <div class="rd-row-wrap">
+          <button type="button" id="btn-download-game-modal" class="rd-btn rd-btn--emerald">Cihaza İndir</button>
+          <button type="button" id="btn-export-game-report" class="rd-btn rd-btn--sky">JSON Rapor</button>
+          <button type="button" id="btn-save-game-settings" class="rd-btn neon-btn">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- MODAL 2: ÖZEL ONAY PENCERESİ                                        -->
+  <!-- =================================================================== -->
+  <div id="modal-confirm" class="rd-modal-backdrop rd-modal-backdrop--top hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="glass-card glass-card--rose rd-modal-panel rd-modal-panel--sm rd-stack">
+      <div class="rd-row">
+        <div class="rd-icon-tile rd-icon-tile--rose" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        </div>
+        <div>
+          <h3 id="confirm-title" class="rd-heading rd-heading--sm">İşlemi Onayla</h3>
+          <p id="confirm-message" class="rd-subtitle">Bu işlemi yapmak istediğinize emin misiniz?</p>
+        </div>
+      </div>
+      <div class="rd-row-end">
+        <button type="button" id="btn-confirm-cancel" class="rd-btn">Vazgeç</button>
+        <button type="button" id="btn-confirm-ok" class="rd-btn rd-btn--danger-solid">Onayla</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- TAM EKRAN WEB ÖNİZLEME / KONTROL TEST SAHNESİ (SİMÜLASYON)          -->
+  <!-- =================================================================== -->
+  <div id="sandbox-overlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="sandbox-game-name">
+    <div class="rd-sandbox-bar">
+      <div class="rd-row rd-min-w-0">
+        <span class="rd-dot rd-dot--emerald rd-dot--pulse"></span>
+        <div class="rd-min-w-0">
+          <h3 id="sandbox-game-name" class="rd-heading rd-heading--sm truncate">Web Önizleme Sahnesi</h3>
+          <p id="sandbox-game-meta" class="mono rd-field-hint truncate">Tarayıcı Kontrol &amp; Profil Önizlemesi (Simülasyon)</p>
+        </div>
+      </div>
+
+      <div class="rd-row-wrap">
+        <button type="button" id="btn-toggle-hud" class="rd-btn rd-btn--sm rd-btn--emerald">HUD: Açık</button>
+        <button type="button" id="btn-toggle-vpad" class="rd-btn rd-btn--sm rd-btn--sky">Kontrol: Açık</button>
+        <button type="button" id="btn-exit-sandbox" class="rd-btn rd-btn--sm rd-btn--rose">Önizlemeden Çık</button>
+      </div>
+    </div>
+
+    <div id="sandbox-viewport">
+      <canvas id="sandbox-canvas"></canvas>
+      <div class="scanlines" aria-hidden="true"></div>
+
+      <div id="sandbox-boot-layer">
+        <div class="rd-icon-tile rd-icon-tile--lg rd-icon-tile--emerald" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+        </div>
+        <div>
+          <p class="rd-kicker rd-kicker--emerald mono">RetroDroid Web Önizleme Katmanı v5.4.0</p>
+          <h4 id="boot-title" class="rd-heading rd-heading--lg">Önizleme Sahnesi Hazırlanıyor...</h4>
+        </div>
+        <div id="boot-steps" class="rd-boot-log"></div>
+      </div>
+
+      <div id="sandbox-hud">
+        <div class="rd-row-wrap">
+          <span class="rd-metric-value--emerald">FPS: <span id="hud-fps">60</span></span>
+          <span class="rd-metric-value--sky">ETİKET RAM: <span id="hud-ram">1240 MB</span></span>
+          <span class="rd-metric-value--amber">ÖLÇEK: <span id="hud-scale">%100</span></span>
+        </div>
+        <div class="rd-row">
+          <span class="rd-dot rd-dot--amber"></span>
+          <span>MOD: <strong class="rd-metric-value--amber">WEB ÖNİZLEME (GERÇEK ANDROID EMÜLATÖRÜ DEĞİL)</strong></span>
+        </div>
+        <div id="hud-input-status" class="rd-field-hint">GİRDİ: Hazır (Klavye / Sanal Gamepad)</div>
+      </div>
+
+      <div id="sandbox-vpad">
+        <div class="rd-dpad" role="group" aria-label="Sanal yön tuşları">
+          <div></div>
+          <button type="button" data-vkey="UP" class="vpad-btn" aria-label="Yukarı yön tuşu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="18 15 12 9 6 15" /></svg>
+          </button>
+          <div></div>
+          <button type="button" data-vkey="LEFT" class="vpad-btn" aria-label="Sol yön tuşu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
+          </button>
+          <div class="rd-dpad-center" aria-hidden="true"></div>
+          <button type="button" data-vkey="RIGHT" class="vpad-btn" aria-label="Sağ yön tuşu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+          </button>
+          <div></div>
+          <button type="button" data-vkey="DOWN" class="vpad-btn" aria-label="Aşağı yön tuşu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+          </button>
+          <div></div>
+        </div>
+
+        <div class="rd-action-pad" role="group" aria-label="Sanal aksiyon tuşları">
+          <button type="button" data-vkey="Y" class="vpad-btn vpad-btn--circle vpad-btn--y" aria-label="Y aksiyon tuşu">Y</button>
+          <button type="button" data-vkey="X" class="vpad-btn vpad-btn--circle vpad-btn--x" aria-label="X aksiyon tuşu">X</button>
+          <button type="button" data-vkey="B" class="vpad-btn vpad-btn--circle vpad-btn--b" aria-label="B aksiyon tuşu">B</button>
+          <button type="button" data-vkey="A" class="vpad-btn vpad-btn--circle vpad-btn--a" aria-label="A aksiyon tuşu">A</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- MODAL 2B: ÖZEL KONTROL DÜZENİ DÜZENLEYİCİ                           -->
+  <!-- =================================================================== -->
+  <div id="modal-control-layout" class="rd-modal-backdrop rd-modal-backdrop--high hidden" role="dialog" aria-modal="true" aria-labelledby="control-layout-title">
+    <div class="glass-card glass-card--indigo rd-modal-panel rd-modal-panel--xl rd-stack">
+      <div class="rd-row-between">
+        <div>
+          <span class="rd-kicker rd-kicker--indigo">Gamepad Düzenleyici</span>
+          <h3 id="control-layout-title" class="rd-heading">Özel Kontrol Düzeni</h3>
+          <p class="rd-subtitle">Sanal kontrol katmanının konumunu, boyutunu ve benzersiz klavye tuş eşlemelerini ayarlayın.</p>
+        </div>
+        <button type="button" id="btn-close-control-layout" class="rd-btn rd-btn--icon" aria-label="Kontrol düzenleyiciyi kapat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="rd-grid-2">
+        <label for="control-layout-side" class="rd-label">Kontrol grupları
+          <select id="control-layout-side" class="rd-select">
+            <option value="standard">D-Pad sol / A-B-X-Y sağ</option>
+            <option value="reversed">A-B-X-Y sol / D-Pad sağ</option>
+          </select>
+        </label>
+        <div class="rd-stack-xs">
+          <label for="control-layout-size" class="rd-row-between rd-label">
+            <span>Tuş boyutu</span>
+            <strong id="control-layout-size-label" class="mono">%100</strong>
+          </label>
+          <input id="control-layout-size" type="range" min="70" max="140" step="5" value="100" class="rd-range" />
+          <label for="control-layout-opacity" class="rd-row-between rd-label">
+            <span>Saydamlık</span>
+            <strong id="control-layout-opacity-label" class="mono">%85</strong>
+          </label>
+          <input id="control-layout-opacity" type="range" min="30" max="100" step="5" value="85" class="rd-range" />
+        </div>
+      </div>
+
+      <div class="rd-subbox rd-stack-sm">
+        <div class="rd-heading rd-heading--xs">Klavye Tuş Eşlemesi (Her tuş yalnızca bir kontrole atanabilir)</div>
+        <div id="control-layout-mappings" class="rd-grid-4"></div>
+        <p id="control-layout-error" class="rd-subbox rd-subbox--rose rd-metric-value--rose hidden" role="alert"></p>
+      </div>
+
+      <div class="rd-row-end rd-divider">
+        <button type="button" id="btn-reset-control-layout" class="rd-btn">Varsayılana Dön</button>
+        <button type="button" id="btn-save-control-layout" class="rd-btn rd-btn--indigo">Düzeni Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- MODAL 3: CİHAZA İNDİRME MERKEZİ                                     -->
+  <!-- =================================================================== -->
+  <div id="modal-download-package" class="rd-modal-backdrop rd-modal-backdrop--high hidden" role="dialog" aria-modal="true" aria-labelledby="dl-game-title">
+    <div class="glass-card glass-card--emerald rd-modal-panel rd-modal-panel--lg rd-stack">
+      <div class="rd-row-between rd-divider-b">
+        <div class="rd-min-w-0">
+          <span class="rd-kicker rd-kicker--emerald">Cihaza İndirme Merkezi</span>
+          <h3 id="dl-game-title" class="rd-heading truncate">Paket Adı</h3>
+          <p id="dl-game-meta" class="mono rd-field-hint truncate">APK • 0 MB • com.example</p>
+        </div>
+        <button type="button" data-close-modal="download-package" class="rd-btn rd-btn--icon" aria-label="İndirme merkezini kapat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="dl-status-banner" class="rd-subbox"></div>
+
+      <div id="dl-options-list" class="rd-stack-sm"></div>
+
+      <div id="dl-reattach-box" class="rd-subbox rd-stack-xs hidden">
+        <p class="rd-flag-title">Bu Oyun İçin Yerel Dosyayı Bağla</p>
+        <p class="rd-field-hint">Cihazınızdaki .apk, .xapk, .apks, .apkm veya .zip dosyasını yeniden seçerek doğrudan veya paket halinde indirebilirsiniz.</p>
+        <input id="dl-reattach-input" type="file" accept=".apk,.xapk,.apks,.apkm,.zip" class="hidden" />
+        <button type="button" id="btn-dl-reattach" class="rd-btn rd-btn--sky rd-btn--sm">Cihazdan Paket Seç ve Bağla</button>
+      </div>
+
+      <div id="dl-progress-box" class="rd-subbox rd-subbox--sky rd-stack-xs hidden" aria-live="polite">
+        <div class="rd-row-between">
+          <span id="dl-progress-label" class="mono rd-metric-value--sky">Paket hazırlanıyor...</span>
+          <span id="dl-progress-pct" class="mono rd-metric-value--emerald">0%</span>
+        </div>
+        <div class="rd-progress-track">
+          <div id="dl-progress-bar" class="rd-progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="rd-row-end rd-divider">
+        <button type="button" data-close-modal="download-package" class="rd-btn">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST BİLDİRİM ALANI -->
+  <div id="toast-container" role="status" aria-live="polite"></div>
+
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>
